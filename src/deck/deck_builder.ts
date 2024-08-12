@@ -1,12 +1,14 @@
-import { ScryfallService } from './scryfall/scryfall.service';
+import { ScryfallService } from '../scryfall/scryfall.service';
 import { writeFileSync } from 'fs';
 
+
 export async function chooseCommander(scryfallService: ScryfallService) {
-  const commanderName = 'Inferno of the Star Mounts'; // Exemplo
+  const commanderName = 'Miku, the Renowned'; // Exemplo Inferno of the Star Mounts
   console.log(commanderName)
   const commander = await scryfallService.getCardByName(commanderName).toPromise();
   return commander;
 }
+
 
 async function searchBasicTerrain(scryfallService: ScryfallService, commanderColor: string[]) {
   const basicLands: any[] = [];
@@ -21,9 +23,8 @@ async function searchBasicTerrain(scryfallService: ScryfallService, commanderCol
   for(const landColor of commanderColor){
     const landName = landTypes[landColor];
 
+    // Busca os terrenos informados terennos
     const landCard = await scryfallService.getCardByName(landName).toPromise();
-    console.log(landCard);
-
     if (landCard) {
       basicLands.push(landCard);
     }
@@ -33,9 +34,7 @@ async function searchBasicTerrain(scryfallService: ScryfallService, commanderCol
   return basicLands;
 }
 
-
-
-export async function buildDeck2(scryfallService: ScryfallService, commander: any) {
+export async function buildDeck(scryfallService: ScryfallService, commander: any) {
   const colors = commander.color_identity.join('');
   const cardQuery = `c:${colors} -type:commander -is:commander`;
 
@@ -57,11 +56,9 @@ export async function buildDeck2(scryfallService: ScryfallService, commander: an
   return [commander, ...deck];
 }
 
-
-export async function buildDeck(scryfallService: ScryfallService, commander: any) {
+export async function buildDeckCardNames(scryfallService: ScryfallService, commander: any) {
   const colors = commander.color_identity.join('');
   const cardQuery = `c:${colors} -type:commander -is:commander`;
-  const landQuery = `c:${colors} -type: land -is:basic land`;
 
   // Busca cartas não-terreno
   const cards = await scryfallService.searchCards(cardQuery).toPromise();
@@ -80,7 +77,6 @@ export async function buildDeck(scryfallService: ScryfallService, commander: any
   // Retorna o deck com o comandante (nome) na primeira posição
   return [commander.name, ...deck];
 }
-
 
 export function saveDeckToFile(deck: any[]) {
   writeFileSync('deck.json', JSON.stringify(deck, null, 2));

@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
-import { HttpModule } from '@nestjs/axios';
-import { ScryfallService } from './scryfall/scryfall.service';
-import { DeckController } from './deck/deck.controller';
-import { DeckService } from './deck/deck.service';
+import { MongooseModule } from '@nestjs/mongoose';
+import { DeckModule } from './deck/deck.module';
 
 @Module({
-  imports: [HttpModule],
-  controllers: [DeckController],
-  providers: [DeckService, ScryfallService],
+  imports: [
+    MongooseModule.forRoot('mongodb://localhost:27017/mtg-dp'),
+    DeckModule,
+  ],
 })
 export class AppModule {}

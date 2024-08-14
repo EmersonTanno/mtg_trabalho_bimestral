@@ -1,9 +1,28 @@
 import { Injectable } from '@nestjs/common';
 import { ScryfallService } from '../scryfall/scryfall.service';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Deck, DeckDocument } from './deck.schema';
 
 @Injectable()
 export class DeckService {
-  constructor(private readonly scryfallService: ScryfallService) {}
+  constructor(
+    @InjectModel(Deck.name) private deckModel: Model<DeckDocument>,
+    private readonly scryfallService: ScryfallService
+  ) {}
+
+  async buildAndSaveDeck(commanderName: string) {
+    // Construa o deck usando os métodos existentes
+    const commander = await this.scryfallService.getCardByName(commanderName).toPromise();
+    const deckNames = await this.buildDeck(commanderName);
+
+    // Salve o deck no Mongo
+    const deck = new this.deckModel({
+      commanderName: commander.name,
+      cards: deckNames
+    });
+    return deck.save();
+  }
 
   async chooseCommander(commanderName: string) {
     const commander = await this.scryfallService.getCardByName(commanderName).toPromise();

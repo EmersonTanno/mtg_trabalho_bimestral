@@ -5,6 +5,16 @@ import { DeckService } from './deck.service';
 export class DeckController {
   constructor(private readonly deckService: DeckService) {}
 
+  @Get('/save')
+  async saveDeck(@Query('commanderName') commanderName: string) {
+    if (!commanderName) {
+      return { error: 'Please provide a commanderName query parameter' };
+    }
+
+    const savedDeck = await this.deckService.buildAndSaveDeck(commanderName);
+    return savedDeck;
+  }
+
   @Get()
   async getDeck(@Query('commanderName') commanderName: string) {
     if (!commanderName) {

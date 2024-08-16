@@ -11,6 +11,19 @@ export class DeckService {
     private readonly scryfallService: ScryfallService
   ) {}
 
+  async buildAndSaveDeckInfo(commanderName: string) {
+    // Construa o deck usando os métodos existentes
+    const commander = await this.scryfallService.getCardByName(commanderName).toPromise();
+    const deckNames = await this.buildDeckAllInfo(commanderName);
+
+    // Salve o deck no Mongo
+    const deck = new this.deckModel({
+      commanderName: commander.name,
+      cards: deckNames
+    });
+    return deck.save();
+  }
+
   async buildAndSaveDeck(commanderName: string) {
     // Construa o deck usando os métodos existentes
     const commander = await this.scryfallService.getCardByName(commanderName).toPromise();
@@ -57,7 +70,9 @@ export class DeckService {
 
     // Busca cartas não-terreno
     const cards = await this.scryfallService.searchCards(cardQuery).toPromise();
-    let deck = cards.data.slice(0, 69).map(card => card.name); // Extrai apenas o nome das primeiras 69 cartas
+    let deck = cards.data.slice(0, 69).map(card => ({
+      name: card.name, 
+      mana_cost: card.mana_cost})); // Extrai apenas o nome e o custo das primeiras 69 cartas
 
     // Busca terrenos básicos
     const basicLands = await this.searchBasicTerrain(colors);
@@ -71,7 +86,7 @@ export class DeckService {
     }
 
     // Retorna o deck com o comandante (nome) na primeira posição
-    return [commander.name, ...deck];
+    return [{ name: commander.name, mana_cost: commander.mana_cost }, ...deck];
   }
 
 

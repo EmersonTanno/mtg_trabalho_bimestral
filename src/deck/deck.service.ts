@@ -70,9 +70,17 @@ export class DeckService {
 
     // Busca cartas não-terreno
     const cards = await this.scryfallService.searchCards(cardQuery).toPromise();
-    let deck = cards.data.slice(0, 69).map(card => ({
-      name: card.name, 
-      mana_cost: card.mana_cost})); // Extrai apenas o nome e o custo das primeiras 69 cartas
+    let deck = cards.data
+      .filter(card => {
+        // Verifica se as cores no custo de mana da carta estão contidas nas cores do comandante
+        const cardColors = card.color_identity.join('');
+        return cardColors.split('').every(color => colors.includes(color));
+      })
+      .slice(0, 69)
+      .map(card => ({
+        name: card.name,
+        mana_cost: card.mana_cost,
+      }));
 
     // Busca terrenos básicos
     const basicLands = await this.searchBasicTerrain(colors);
@@ -97,8 +105,14 @@ export class DeckService {
     const cardQuery = `c:${colors} -type:commander -is:commander`;
   
     // Busca cartas não-terreno
-   const cards = await this.scryfallService.searchCards(cardQuery).toPromise();
-    let deck = cards.data.slice(0, 69); // Seleciona as primeiras 69 cartas
+    const cards = await this.scryfallService.searchCards(cardQuery).toPromise();
+    let deck = cards.data
+      .filter(card => {
+        // Verifica se as cores no custo de mana da carta estão contidas nas cores do comandante
+        const cardColors = card.color_identity.join('');
+        return cardColors.split('').every(color => colors.includes(color));
+      })
+      .slice(0, 69)
   
     // Busca terrenos básicos
     const basicLands = await this.searchBasicTerrain(colors);
@@ -108,7 +122,7 @@ export class DeckService {
     // Adiciona terrenos básicos até completar 99 cartas no deck
     let landIndex = 0;
     while (deck.length < 99) {
-      deck.push(basicLands[landIndex % basicLands.length]); // Cicla pelos terrenos encontrados
+      deck.push(lands[landIndex % lands.length]); // Cicla pelos terrenos encontrados
       landIndex++;
     }
   

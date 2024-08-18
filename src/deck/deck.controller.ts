@@ -1,5 +1,6 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, Post, UseGuards } from '@nestjs/common';
 import { DeckService } from './deck.service';
+import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('deck')
 export class DeckController {
@@ -15,7 +16,8 @@ export class DeckController {
     return savedDeck;
   }
 
-  @Get('/saveName')
+  @UseGuards(AuthGuard)
+  @Post('/saveName')
   async saveDeckName(@Query('commanderName') commanderName: string) {
     if (!commanderName) {
       return { error: 'Please provide a commanderName query parameter' };

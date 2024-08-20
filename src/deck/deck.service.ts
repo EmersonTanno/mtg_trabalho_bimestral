@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ScryfallService } from '../scryfall/scryfall.service';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -128,5 +128,16 @@ export class DeckService {
   
     // Retorna o deck com o comandante na primeira posição
     return [commander, ...deck];
+  }
+
+  async getDeckById(id: string): Promise<Deck> {
+    // Encontra o deck pelo ID no MongoDB
+    const deck = await this.deckModel.findById(id).exec();
+    
+    if (!deck) {
+      throw new NotFoundException(`Deck with id ${id} not found`);
+    }
+    
+    return deck;
   }
 }

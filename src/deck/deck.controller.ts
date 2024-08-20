@@ -1,12 +1,14 @@
-import { Controller, Get, Query, Post, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, Post, UseGuards, Param } from '@nestjs/common';
 import { DeckService } from './deck.service';
 import { AuthGuard } from '../auth/auth.guard';
+import { Deck } from './deck.schema';
 
 @Controller('deck')
 export class DeckController {
   constructor(private readonly deckService: DeckService) {}
 
-  @Get('/saveComplete')
+  @UseGuards(AuthGuard)
+  @Post('/saveComplete')
   async saveDeckComplete(@Query('commanderName') commanderName: string) {
     if (!commanderName) {
       return { error: 'Please provide a commanderName query parameter' };
@@ -51,5 +53,10 @@ export class DeckController {
 
     // Retorna o deck
     return deck;
+  }
+
+  @Get(':id')
+  async getDeckById(@Param('id') id: string): Promise<Deck> {
+    return this.deckService.getDeckById(id);
   }
 }

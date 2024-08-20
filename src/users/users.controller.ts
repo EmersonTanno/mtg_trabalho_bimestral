@@ -8,6 +8,6 @@ export class UsersController {
   @Post('create')
   async createUser(@Body('username') username: string, @Body('password') password: string) {
     const user = await this.usersService.createUser(username, password);
-    return { userId: user.userId, username: user.username };
+    return { username: user.username }; 
   }
 }

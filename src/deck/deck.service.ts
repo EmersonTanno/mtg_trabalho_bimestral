@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { ScryfallService } from '../scryfall/scryfall.service';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -39,6 +39,9 @@ export class DeckService {
 
   async chooseCommander(commanderName: string) {
     const commander = await this.scryfallService.getCardByName(commanderName).toPromise();
+    if(!commander.type_line.includes('Legendary Creature')){
+      throw new BadRequestException(`${commanderName} is not a Legendary Creature and cannot be a commander.`);
+    }
     return commander;
   }
 

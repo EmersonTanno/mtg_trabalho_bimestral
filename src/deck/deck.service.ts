@@ -65,6 +65,7 @@ export class DeckService {
     return basicLands;
   }
 
+  //build deck apenas com nome e mana_cost
   async buildDeck(commanderName: string) {
     const commander = await this.chooseCommander(commanderName);
 
@@ -96,11 +97,11 @@ export class DeckService {
       landIndex++;
     }
 
-    // Retorna o deck com o comandante (nome) na primeira posição
+    // Retorna o deck com o comandante na primeira posição
     return [{ name: commander.name, mana_cost: commander.mana_cost }, ...deck];
   }
 
-
+  //build deck com todas as informações
   async buildDeckAllInfo(commanderName: string) {
     const commander = await this.chooseCommander(commanderName);
 
@@ -134,7 +135,6 @@ export class DeckService {
   }
 
   async getDeckById(id: string): Promise<Deck> {
-    // Encontra o deck pelo ID no MongoDB
     const deck = await this.deckModel.findById(id).exec();
     
     if (!deck) {

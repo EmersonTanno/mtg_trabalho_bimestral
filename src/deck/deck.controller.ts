@@ -18,6 +18,7 @@ export class DeckController {
     return savedDeck;
   }
 
+  /*
   @UseGuards(AuthGuard)
   @Post('/saveName')
   async saveDeckName(@Query('commanderName') commanderName: string) {
@@ -28,6 +29,7 @@ export class DeckController {
     const savedDeck = await this.deckService.buildAndSaveDeck(commanderName);
     return savedDeck;
   }
+  */
 
   @Get()
   async getDeck(@Query('commanderName') commanderName: string) {
@@ -38,7 +40,6 @@ export class DeckController {
     // Constrói o deck usando o nome do comandante passado na query, retornando apenas o nome das cartas
     const deck = await this.deckService.buildDeck(commanderName);
 
-    // Retorna o deck
     return deck;
   }
 
@@ -51,7 +52,6 @@ export class DeckController {
     // Constrói o deck usando o nome do comandante passado na query, retornando todas as infos das cartas
     const deck = await this.deckService.buildDeckAllInfo(commanderName);
 
-    // Retorna o deck
     return deck;
   }
 

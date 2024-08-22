@@ -14,12 +14,12 @@ export class UsersService {
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const newUser = new this.userModel({
+    const newUser = await this.userModel.create({
       username,
       password: hashedPassword,
     });
 
-    return newUser.save();
+    return newUser;
   }
 
   async findOne(username: string): Promise<User | undefined> {

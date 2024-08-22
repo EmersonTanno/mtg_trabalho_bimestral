@@ -12,11 +12,10 @@ export class DeckService {
   ) {}
 
   async buildAndSaveDeckInfo(commanderName: string) {
-    // Construa o deck usando os métodos existentes
     const commander = await this.scryfallService.getCardByName(commanderName).toPromise();
     const deckNames = await this.buildDeckAllInfo(commanderName);
 
-    // Salve o deck no Mongo
+    // Salva o deck no Mongo
     const deck = new this.deckModel({
       commanderName: commander.name,
       cards: deckNames
@@ -25,18 +24,17 @@ export class DeckService {
   }
 
   async buildAndSaveDeck(commanderName: string) {
-    // Construa o deck usando os métodos existentes
     const commander = await this.scryfallService.getCardByName(commanderName).toPromise();
     const deckNames = await this.buildDeck(commanderName);
 
-    // Salve o deck no Mongo
-    const deck = new this.deckModel({
+    const deck = await this.deckModel.create({
       commanderName: commander.name,
-      cards: deckNames
+      cards: deckNames,
     });
+
     return deck.save();
   }
-
+  
   async chooseCommander(commanderName: string) {
     const commander = await this.scryfallService.getCardByName(commanderName).toPromise();
     if(!commander.type_line.includes('Legendary Creature')){

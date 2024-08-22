@@ -14,7 +14,7 @@ describe('ScryfallService', () => {
         {
           provide: HttpService,
           useValue: {
-            get: jest.fn(),  // Mock da função 'get'
+            get: jest.fn(),
           },
         },
       ],
@@ -42,12 +42,10 @@ describe('ScryfallService', () => {
         { name: 'Mock Card', color_identity: ['G'] },
       ];
 
-      // Mock da resposta do HttpService.get()
       (httpService.get as jest.Mock).mockReturnValue(of(mockResponse));
 
       const result = await scryfallService.searchCards('mock query').toPromise();
-      
-      // Comparar apenas os dados relevantes
+
       expect(result.data).toEqual(response);
     });
   });
@@ -67,12 +65,10 @@ describe('ScryfallService', () => {
         { name: 'Mock Card', color_identity: ['G'] },
       ];
 
-      // Mock da resposta do HttpService.get()
       (httpService.get as jest.Mock).mockReturnValue(of(mockResponse));
 
       const result = await scryfallService.getCardByName('mock query').toPromise();
       
-      // Comparar apenas os dados relevantes
       expect(result.data).toEqual(response);
     });
   });

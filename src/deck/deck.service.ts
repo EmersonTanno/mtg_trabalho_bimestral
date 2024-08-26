@@ -141,4 +141,15 @@ export class DeckService {
     
     return deck;
   }
+
+  async deleteDeckById(id: string): Promise<string> {
+    const deck = await this.deckModel.findByIdAndDelete(id).exec();
+  
+    if (!deck) {
+      throw new NotFoundException(`Deck with id ${id} not found`);
+    }
+  
+    return `Deck with commander ${deck.commanderName} deleted`;
+  }
+  
 }

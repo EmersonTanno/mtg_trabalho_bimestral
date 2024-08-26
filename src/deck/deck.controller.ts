@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Post, UseGuards, Param } from '@nestjs/common';
+import { Controller, Get, Query, Post, UseGuards, Param, Delete } from '@nestjs/common';
 import { DeckService } from './deck.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { Deck } from './deck.schema';
@@ -58,5 +58,11 @@ export class DeckController {
   @Get(':id')
   async getDeckById(@Param('id') id: string): Promise<Deck> {
     return this.deckService.getDeckById(id);
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete(':id')
+  async deleteDeckById(@Param('id') id:string): Promise<String> {
+    return this.deckService.deleteDeckById(id);
   }
 }

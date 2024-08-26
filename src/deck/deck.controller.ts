@@ -8,8 +8,8 @@ export class DeckController {
   constructor(private readonly deckService: DeckService) {}
 
   @UseGuards(AuthGuard)
-  @Post('/saveComplete')
-  async saveDeckComplete(@Query('commanderName') commanderName: string) {
+  @Post(':commanderName')
+  async saveDeckComplete(@Param('commanderName') commanderName: string) {
     if (!commanderName) {
       return { error: 'Please provide a commanderName query parameter' };
     }

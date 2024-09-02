@@ -2,34 +2,25 @@ import { Controller, Get, Query, Post, UseGuards, Param, Delete } from '@nestjs/
 import { DeckService } from './deck.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { Deck } from './deck.schema';
+import { Roles } from 'src/auth/roles/roles.decorator';
+import { Role } from 'src/auth/roles/enum/role.enum';
+import { RolesGuard } from 'src/auth/roles/roles.guard';
 
 @Controller('deck')
 export class DeckController {
   constructor(private readonly deckService: DeckService) {}
 
-  @UseGuards(AuthGuard)
+  @Roles(Role.User)
+  @UseGuards(AuthGuard, RolesGuard)
   @Post(':commanderName')
   async saveDeckComplete(@Param('commanderName') commanderName: string) {
     if (!commanderName) {
       return { error: 'Please provide a commanderName query parameter' };
     }
-
+  
     const savedDeck = await this.deckService.buildAndSaveDeckInfo(commanderName);
     return savedDeck;
   }
-
-  /*
-  @UseGuards(AuthGuard)
-  @Post('/saveName')
-  async saveDeckName(@Query('commanderName') commanderName: string) {
-    if (!commanderName) {
-      return { error: 'Please provide a commanderName query parameter' };
-    }
-
-    const savedDeck = await this.deckService.buildAndSaveDeck(commanderName);
-    return savedDeck;
-  }
-  */
 
   @Get()
   async getDeck(@Query('commanderName') commanderName: string) {

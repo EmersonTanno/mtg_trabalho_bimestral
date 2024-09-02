@@ -7,17 +7,18 @@ import * as bcrypt from 'bcrypt';
 export class AuthService {
   constructor(
     private usersService: UsersService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
   ) {}
 
-  async signIn(
-    username: string,
-    pass: string,
-  ): Promise<{ access_token: string }> {
+  async signIn(username: string, pass: string): Promise<{ access_token: string }> {
     const user = await this.usersService.findOne(username);
 
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
+    }
+
+    if (!user.roles) {
+      throw new UnauthorizedException('User roles not found');
     }
 
     const isPasswordValid = await bcrypt.compare(pass, user.password);
@@ -26,7 +27,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload = { sub: user.userId, username: user.username };
+    const payload = { sub: user.userId, username: user.username, roles: user.roles };
     return {
       access_token: await this.jwtService.signAsync(payload),
     };

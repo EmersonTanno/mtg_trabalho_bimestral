@@ -7,15 +7,22 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post('create')
-  async createUser(@Body('username') username: string, @Body('password') password: string) {
-    const existinguser = await this.usersService.findOne(username);
-    if(existinguser){
-      throw new ConflictException(`User "${username}" alredy exists`);
-    }
-    const user = await this.usersService.createUser(username, password);
-    return (`User "${user.username}" create sucess`);
+  async createUser(
+    @Body('username') username: string,
+    @Body('password') password: string,
+    @Body('roles') roles: string[]
+  ) {
+    const existingUser = await this.usersService.findOne(username);
     
+    if (existingUser) {
+      throw new ConflictException(`User "${username}" already exists`);
+    }
+    
+    const user = await this.usersService.createUser(username, password, roles);
+    
+    return { message: `User "${user.username}" created successfully` };
   }
+  
 
   @Get(':username')
   async getUser(@Param('username') username: string): Promise<Partial<User>> {

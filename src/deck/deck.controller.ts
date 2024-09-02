@@ -10,8 +10,9 @@ import { RolesGuard } from 'src/auth/roles/roles.guard';
 export class DeckController {
   constructor(private readonly deckService: DeckService) {}
 
-  @Roles(Role.User)
+
   @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.User)
   @Post(':commanderName')
   async saveDeckComplete(@Param('commanderName') commanderName: string) {
     if (!commanderName) {

@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { User, UserDocument } from './users.schema';
-import { NotificationKind } from 'rxjs';
 
 @Injectable()
 export class UsersService {
